@@ -1,0 +1,17 @@
+databaseChangeLog:
+    - include:
+        file: db/changelog/create-shelter.sql
+    - include:
+        file: db/changelog/create-cat.sql
+    - include:
+        file: db/changelog/create-dog.sql
+    - include:
+        file: db/changelog/create-shelterCat.sql
+    - include:
+        file: db/changelog/create-shelterDog.sql
+    - include:
+        file: db/changelog/create-pet.sql
+    - include:
+        file: db/changelog/create-owner.sql
+    - include:
+        file: db/changelog/create-petReport.sql
