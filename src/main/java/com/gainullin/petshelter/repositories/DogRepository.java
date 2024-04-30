@@ -1,9 +1,9 @@
 package com.gainullin.petshelter.repositories;
 
-import com.gainullin.petshelter.entities.Shelter;
+import com.gainullin.petshelter.entities.Dog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ShelterRepository extends JpaRepository<Shelter,Long> {
+public interface DogRepository extends JpaRepository<Dog,Long> {
 }

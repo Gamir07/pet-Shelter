@@ -1,23 +1,17 @@
-package com.gainullin.petshelter.commands;
+package com.gainullin.petshelter.menu_buttons;
 
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component("/start")
-public class StartCommand{
-    private final String greeting = "Тебя приветствует телеграмм бот PetShelter, и я готов помочь найти тебе подходящую" +
-            " собаку или кошку. На данном этапе тебе предстоит выбрать приют:";
+@Component
+public class StartMenuButtons {
 
+    public  InlineKeyboardMarkup getInlineKeyboardButtons(){
 
-    public SendMessage action(String chatId) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.setText(greeting);
         InlineKeyboardMarkup markupInline = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
         List<InlineKeyboardButton> rowInLine = new ArrayList<>();
@@ -34,8 +28,6 @@ public class StartCommand{
         rowInLine.add(dogShelterButton);
         rowsInLine.add(rowInLine);
         markupInline.setKeyboard(rowsInLine);
-        sendMessage.setReplyMarkup(markupInline);
-
-        return sendMessage;
+        return markupInline;
     }
 }

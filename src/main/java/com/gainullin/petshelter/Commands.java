@@ -1,6 +1,0 @@
-package com.gainullin.petshelter;
-
-public enum Commands {
-    CAT_SHELTER, DOG_SHELTER, INFO_ABOUT_CAT_SHELTER, INFO_ABOUT_DOG_SHELTER, ADOPTION_RULES, SEND_REPORT,
-    CALL_VOLUNTEER
-}

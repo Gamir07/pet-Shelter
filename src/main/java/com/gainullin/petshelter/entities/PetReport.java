@@ -3,6 +3,7 @@ package com.gainullin.petshelter.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
 @Entity
@@ -24,6 +25,10 @@ public class PetReport {
     private boolean isChecked;
 
     @OneToOne
-    @JoinColumn(name = "pet_id")
-    private Pet pet;
+    @JoinColumn(name = "cat_id")
+    private Cat cat;
+
+    @OneToOne
+    @JoinColumn(name = "dog_id")
+    private Dog dog;
 }
