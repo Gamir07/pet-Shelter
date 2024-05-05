@@ -4,9 +4,13 @@ import com.gainullin.petshelter.commands.Command;
 import com.gainullin.petshelter.menu_buttons.DogShelterInfoButtons;
 import com.gainullin.petshelter.service.interfaces.DogShelterService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+
+import java.io.File;
 
 
 @Component("DOG_SHELTER_LOCATION")
@@ -15,6 +19,8 @@ public class DogShelterLocationCommand implements Command {
 
     private final DogShelterInfoButtons buttons;
     private final DogShelterService service;
+    @Value("${path.to.dogShelter.roadmap}")
+    private File file;
 
     /**
      *
@@ -24,13 +30,16 @@ public class DogShelterLocationCommand implements Command {
      * @see DogShelterService #getAddress, #getWorkingHours
      */
     @Override
-    public SendMessage action(String chatId) {
+    public SendPhoto action(String chatId) {
         String address = service.getAddress();
         String workingHours = service.getWorkingHours();
-        SendMessage sendMessage = new SendMessage(chatId, address + " " + workingHours);
+        SendPhoto sendPhoto = new SendPhoto();
+        sendPhoto.setChatId(chatId);
+        sendPhoto.setCaption(address + " " + workingHours);
+        sendPhoto.setPhoto(new InputFile(file));
         InlineKeyboardMarkup markupInline = buttons.getInlineKeyboardButtons();
-        sendMessage.setReplyMarkup(markupInline);
-        return sendMessage;
+        sendPhoto.setReplyMarkup(markupInline);
+        return sendPhoto;
     }
 
 

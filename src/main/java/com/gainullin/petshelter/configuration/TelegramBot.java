@@ -6,7 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -23,24 +26,24 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     /**
      * Метод обрабатывает текстовое сообщение или взаимодейтвие с кнопкой, и исполняет соответствующую команду
-     * @param update  это параметр который телеграмм бот получает от пользователя при взаимодействии
+     *
+     * @param update это параметр который телеграмм бот получает от пользователя при взаимодействии
      */
     @Override
     public void onUpdateReceived(Update update) {
-
         if (update.hasMessage() && update.getMessage().hasText()) {
             String chatId = update.getMessage().getChatId().toString();
             String text = update.getMessage().getText();
-            SendMessage action = commands.getOrDefault(text, new DefaultCommand()).action(chatId);
+            PartialBotApiMethod<Message> action = commands.getOrDefault(text, new DefaultCommand()).action(chatId);
             log.info("Message: [{}]", text);
-            sendMessage(action);
+            execution(action);
 
         } else if (update.hasCallbackQuery()) {
             String chatId = update.getCallbackQuery().getMessage().getChatId().toString();
             String callBackData = update.getCallbackQuery().getData();
-            SendMessage action = commands.getOrDefault(callBackData, new DefaultCommand()).action(chatId);
+            PartialBotApiMethod<Message> action = commands.getOrDefault(callBackData, new DefaultCommand()).action(chatId);
             log.info("Message from callback: [{}]", callBackData);
-            sendMessage(action);
+            execution(action);
         }
     }
 
@@ -51,6 +54,23 @@ public class TelegramBot extends TelegramLongPollingBot {
             throw new RuntimeException(e);
         }
     }
+
+    private void sendPhoto(SendPhoto sendPhoto) {
+        try {
+            execute(sendPhoto);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void execution(PartialBotApiMethod<Message> action) {
+        if (action instanceof SendPhoto) {
+            sendPhoto((SendPhoto) action);
+        } else if (action instanceof SendMessage) {
+            sendMessage((SendMessage) action);
+        }
+    }
+
     @Override
     public String getBotUsername() {
         return botConfig.getName();
