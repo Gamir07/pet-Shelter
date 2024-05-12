@@ -11,8 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name = "owner")
 public class Owner {
+
     @Id
-    @GeneratedValue
     private String chatId;
     private String name;
     private String phoneNumber;

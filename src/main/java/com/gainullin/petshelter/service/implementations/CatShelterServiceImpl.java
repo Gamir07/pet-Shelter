@@ -1,16 +1,16 @@
 package com.gainullin.petshelter.service.implementations;
 
-import com.gainullin.petshelter.repositories.DogShelterRepository;
-import com.gainullin.petshelter.service.interfaces.DogShelterService;
+import com.gainullin.petshelter.repositories.CatShelterRepository;
+import com.gainullin.petshelter.service.interfaces.CatShelterService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @RequiredArgsConstructor
-public class DogShelterServiceImpl implements DogShelterService {
+public class CatShelterServiceImpl implements CatShelterService {
+    private final CatShelterRepository repository;
 
-    private final DogShelterRepository repository;
-
+    @Override
     public String getInfo() {
         return repository.getInfo();
     }

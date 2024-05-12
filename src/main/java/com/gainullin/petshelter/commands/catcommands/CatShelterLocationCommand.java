@@ -1,7 +1,8 @@
-package com.gainullin.petshelter.commands.dogcommands;
+package com.gainullin.petshelter.commands.catcommands;
 
 import com.gainullin.petshelter.commands.Command;
-import com.gainullin.petshelter.menu_buttons.dog_menu_buttons.DogShelterInfoButtons;
+import com.gainullin.petshelter.menu_buttons.cat_menu_buttons.CatShelterInfoButtons;
+import com.gainullin.petshelter.service.interfaces.CatShelterService;
 import com.gainullin.petshelter.service.interfaces.DogShelterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,14 +14,13 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 
 import java.io.File;
 
-
-@Component("DOG_SHELTER_LOCATION")
+@Component("CAT_SHELTER_LOCATION")
 @RequiredArgsConstructor
-public class DogShelterLocationCommand implements Command {
+public class CatShelterLocationCommand implements Command {
 
-    private final DogShelterInfoButtons buttons;
-    private final DogShelterService service;
-    @Value("${path.to.dogShelter.roadmap}")
+    private final CatShelterInfoButtons buttons;
+    private final CatShelterService service;
+    @Value("${path.to.catShelter.roadmap}")
     private File file;
 
     /**
@@ -43,6 +43,4 @@ public class DogShelterLocationCommand implements Command {
         sendPhoto.setReplyMarkup(markupInline);
         return sendPhoto;
     }
-
-
 }

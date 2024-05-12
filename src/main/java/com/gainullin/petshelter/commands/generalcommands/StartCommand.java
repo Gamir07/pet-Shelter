@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 import java.io.File;
@@ -16,23 +18,26 @@ import java.io.File;
 public class StartCommand implements Command {
 
     private final StartMenuButtons menuButtons;
-    @Value("${path.to.startCommandPhoto}")
-    private File chatPhoto;
+    @Value("${path.to.greetingPhoto}")
+    private File greetingPhoto;
 
     /**
-     * @param chatId уникальный идентификатор чата
-     * @return SendMessage - возвращает приветственное сообщение и предлаегает выбрать приют
+     * @param update это параметр который телеграмм бот получает от пользователя при взаимодействии
+     * @return SendPhoto - возвращает приветственное сообщение, и приветственное фото и предлагает выбрать приют
      */
 
     @Override
-    public SendPhoto action(String chatId) {
-        String greeting = "Тебя приветствует телеграмм бот PetShelter, и я готов помочь тебе найти  подходящую" +
+    public SendPhoto action(Update update) {
+        User user = update.getMessage().getFrom();
+        String firstName = user.getFirstName();
+        String chatId = update.getMessage().getChatId().toString();
+        String greeting = String.format("Привет %s. Это телеграмм бот PetShelter, и я готов помочь тебе найти  подходящую" +
                 " собаку или кошку. Чтобы пользоваться данным телеграмм ботом используй предлагаемые кнопки." +
-                " На данном этапе тебе предстоит выбрать приют:";
+                " На данном этапе тебе предстоит выбрать приют:",firstName);
 
         SendPhoto sendPhoto = new SendPhoto();
         sendPhoto.setChatId(chatId);
-        sendPhoto.setPhoto(new InputFile(chatPhoto));
+        sendPhoto.setPhoto(new InputFile(greetingPhoto));
         sendPhoto.setCaption(greeting);
         InlineKeyboardMarkup markupInline = menuButtons.getInlineKeyboardButtons();
         sendPhoto.setReplyMarkup(markupInline);

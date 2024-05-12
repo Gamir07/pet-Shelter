@@ -1,4 +1,4 @@
-package com.gainullin.petshelter.menu_buttons;
+package com.gainullin.petshelter.menu_buttons.dog_menu_buttons;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;

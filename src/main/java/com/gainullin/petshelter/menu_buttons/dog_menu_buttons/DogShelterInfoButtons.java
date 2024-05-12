@@ -1,4 +1,4 @@
-package com.gainullin.petshelter.menu_buttons;
+package com.gainullin.petshelter.menu_buttons.dog_menu_buttons;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -26,14 +26,14 @@ public class DogShelterInfoButtons {
 
         var securityInfo = new InlineKeyboardButton();
         securityInfo.setText("Контактные данные охраны");
-        securityInfo.setCallbackData("SECURITY_INFO");
+        securityInfo.setCallbackData("DOG_SHELTER_SECURITY_INFO");
 
         var safety = new InlineKeyboardButton();
         safety.setText("Рекомендации о технике безопасности");
-        safety.setCallbackData("SAFETY");
+        safety.setCallbackData("DOG_SHELTER_SAFETY");
 
         var saveContactDetails = new InlineKeyboardButton();
-        saveContactDetails.setText("Записать контактные данные для связи");
+        saveContactDetails.setText("Оставить контактные данные для связи");
         saveContactDetails.setCallbackData("SAVE_CONTACT_DETAILS");
 
         var callVolunteer = new InlineKeyboardButton();

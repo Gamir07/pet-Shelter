@@ -23,7 +23,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final BotConfig botConfig;
     private final Map<String, Command> commands;
 
-
     /**
      * Метод обрабатывает текстовое сообщение или взаимодейтвие с кнопкой, и исполняет соответствующую команду
      *
@@ -32,16 +31,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String chatId = update.getMessage().getChatId().toString();
             String text = update.getMessage().getText();
-            PartialBotApiMethod<Message> action = commands.getOrDefault(text, new DefaultCommand()).action(chatId);
-            log.info("Message: [{}]", text);
+            PartialBotApiMethod<Message> action = commands.getOrDefault(text, new DefaultCommand()).action(update);
+            log.info("Message from text: [{}]", text);
             execution(action);
 
-        } else if (update.hasCallbackQuery()) {
-            String chatId = update.getCallbackQuery().getMessage().getChatId().toString();
+        }
+        else if (update.hasCallbackQuery()) {
             String callBackData = update.getCallbackQuery().getData();
-            PartialBotApiMethod<Message> action = commands.getOrDefault(callBackData, new DefaultCommand()).action(chatId);
+            PartialBotApiMethod<Message> action = commands.getOrDefault(callBackData, new DefaultCommand()).action(update);
             log.info("Message from callback: [{}]", callBackData);
             execution(action);
         }
