@@ -11,18 +11,14 @@ import org.springframework.stereotype.Service;
 public class OwnerServiceImpl implements OwnerService {
     private final OwnerRepository repository;
 
-    /**
-     *
-     * @param owner - это параметр который принмает метод и сохраняет его в базу данных
-     */
     @Override
     public void save(Owner owner) {
         repository.save(owner);
     }
 
     /**
-     *
-     * @return метод обращается в базу данных и возвращает chat_id волонтера
+     * Поиск волонтера в базе данных
+     * @return метод возвращает chat_id волонтера
      */
     @Override
     public String findVolunteer() {

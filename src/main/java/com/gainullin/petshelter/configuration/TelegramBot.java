@@ -32,12 +32,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String text = update.getMessage().getText();
-            PartialBotApiMethod<Message> action = commands.getOrDefault(text, new DefaultCommand()).action(update);
+            PartialBotApiMethod<Message> action = parseText(update);
             log.info("Message from text: [{}]", text);
             execution(action);
 
-        }
-        else if (update.hasCallbackQuery()) {
+        } else if (update.hasCallbackQuery()) {
             String callBackData = update.getCallbackQuery().getData();
             PartialBotApiMethod<Message> action = commands.getOrDefault(callBackData, new DefaultCommand()).action(update);
             log.info("Message from callback: [{}]", callBackData);
@@ -67,6 +66,27 @@ public class TelegramBot extends TelegramLongPollingBot {
         } else if (action instanceof SendMessage) {
             sendMessage((SendMessage) action);
         }
+    }
+
+    private PartialBotApiMethod<Message> parseText(Update update) {
+        String report = """
+                id:\\s(\\d*)
+                diet:\\s(\\w*)
+                wellbeing:\\s(\\w*)
+                habits:\\s(\\w*)
+                """;
+        String phoneNumber = "8\\(9\\d{2}\\)\\d{7}";
+        String text = update.getMessage().getText();
+        if ("/start".equals(text)) {
+            return commands.get(text).action(update);
+        } else if (text.matches(report)) {
+            return commands.get("SAVE_REPORT").action(update);
+        } else if (text.matches(phoneNumber)) {
+            return commands.get("SAVE_CONTACT_COMMAND").action(update);
+        } else {
+            return commands.getOrDefault(text, new DefaultCommand()).action(update);
+        }
+
     }
 
     @Override

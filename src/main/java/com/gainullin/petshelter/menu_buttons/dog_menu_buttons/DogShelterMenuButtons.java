@@ -21,7 +21,7 @@ public class DogShelterMenuButtons {
 
         var adoptionRules = new InlineKeyboardButton();
         adoptionRules.setText("Как взять собаку из приюта");
-        adoptionRules.setCallbackData("ADOPTION_RULES");
+        adoptionRules.setCallbackData("DOG_ADOPTION_RULES");
 
         var sendReport = new InlineKeyboardButton();
         sendReport.setText("Прислать отчет о питомце");

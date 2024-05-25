@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
-@Data
 @NoArgsConstructor
+@Data
+@Table(name = "pet_report")
 public class PetReport {
+
     @Id
     @GeneratedValue
     private long id;
@@ -21,7 +23,7 @@ public class PetReport {
     private String filePath;
     private String mediaType;
     private String fileSize;
-    private Date dateOfReport;
+    private LocalDateTime dateOfReport;
     private boolean isChecked;
 
     @OneToOne

@@ -21,7 +21,7 @@ public class CatShelterMenuButtons {
 
         var adoptionRules = new InlineKeyboardButton();
         adoptionRules.setText("Как взять кошку из приюта");
-        adoptionRules.setCallbackData("ADOPTION_RULES");
+        adoptionRules.setCallbackData("CAT_ADOPTION_RULES");
 
         var sendReport = new InlineKeyboardButton();
         sendReport.setText("Прислать отчет о питомце");

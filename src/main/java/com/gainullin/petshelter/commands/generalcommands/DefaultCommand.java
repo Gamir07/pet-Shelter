@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public class DefaultCommand implements Command {
     @Override
     public SendMessage action(Update update) {
-        String chatId = update.getCallbackQuery().getMessage().getChatId().toString();
+        String chatId = update.getMessage().getChatId().toString();
 
         return new SendMessage(chatId, "Команда не распознана");
     }
