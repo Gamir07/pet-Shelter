@@ -7,6 +7,6 @@ create table cat(
 	name varchar(50),
 	is_handicapped boolean,
 	is_adopted boolean,
-	pet_photo oid,
+	file_path_to_pet_photo varchar(50),
 	shelter_id bigserial references Shelter (id)
 );

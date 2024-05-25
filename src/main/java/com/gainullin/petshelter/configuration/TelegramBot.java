@@ -1,69 +1,91 @@
 package com.gainullin.petshelter.configuration;
 
+import com.gainullin.petshelter.commands.Command;
+import com.gainullin.petshelter.commands.generalcommands.DefaultCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class TelegramBot extends TelegramLongPollingBot {
-    private final String about = "Тебя приветствует телеграмм бот PetShelter, и я готов помочь найти тебе подходящую" +
-            " собаку или кошку." + " Так кого ты хочешь:  ";
-
 
     private final BotConfig botConfig;
+    private final Map<String, Command> commands;
 
+    /**
+     * Метод обрабатывает текстовое сообщение или взаимодейтвие с кнопкой, и исполняет соответствующую команду
+     *
+     * @param update это параметр который телеграмм бот получает от пользователя при взаимодействии
+     */
     @Override
     public void onUpdateReceived(Update update) {
-        Long chatId = update.getMessage().getChatId();
-        String text = update.getMessage().getText();
-        startCommand(chatId);
-//        String message = "привет";
-//
-//        if (text.equals("/start")) {
-//            SendMessage sendMessage = new SendMessage();
-//            sendMessage.setChatId(chatId.toString());
-//            sendMessage.setText(message);
-//            try {
-//                execute(sendMessage);
-//            } catch (TelegramApiException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
+        if (update.hasMessage() && update.getMessage().hasText()) {
+            String text = update.getMessage().getText();
+            PartialBotApiMethod<Message> action = parseText(update);
+            log.info("Message from text: [{}]", text);
+            execution(action);
 
+        } else if (update.hasCallbackQuery()) {
+            String callBackData = update.getCallbackQuery().getData();
+            PartialBotApiMethod<Message> action = commands.getOrDefault(callBackData, new DefaultCommand()).action(update);
+            log.info("Message from callback: [{}]", callBackData);
+            execution(action);
+        }
     }
 
-    private void startCommand(Long chatId) {
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId.toString());
-        sendMessage.setText(about);
-        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
-        List<KeyboardRow> keyboardRows = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-        row.add("Кошку");
-        row.add("Собаку");
-        keyboardRows.add(row);
-        replyKeyboardMarkup.setKeyboard(keyboardRows);
-        sendMessage.setReplyMarkup(replyKeyboardMarkup);
+    private void sendMessage(SendMessage sendMessage) {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    private void sendPhoto(SendPhoto sendPhoto) {
+        try {
+            execute(sendPhoto);
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void execution(PartialBotApiMethod<Message> action) {
+        if (action instanceof SendPhoto) {
+            sendPhoto((SendPhoto) action);
+        } else if (action instanceof SendMessage) {
+            sendMessage((SendMessage) action);
+        }
+    }
+
+    private PartialBotApiMethod<Message> parseText(Update update) {
+        String report = """
+                id:\\s(\\d*)
+                diet:\\s(\\w*)
+                wellbeing:\\s(\\w*)
+                habits:\\s(\\w*)
+                """;
+        String phoneNumber = "8\\(9\\d{2}\\)\\d{7}";
+        String text = update.getMessage().getText();
+        if ("/start".equals(text)) {
+            return commands.get(text).action(update);
+        } else if (text.matches(report)) {
+            return commands.get("SAVE_REPORT").action(update);
+        } else if (text.matches(phoneNumber)) {
+            return commands.get("SAVE_CONTACT_COMMAND").action(update);
+        } else {
+            return commands.getOrDefault(text, new DefaultCommand()).action(update);
+        }
 
     }
 
@@ -77,3 +99,5 @@ public class TelegramBot extends TelegramLongPollingBot {
         return botConfig.getToken();
     }
 }
+
+
